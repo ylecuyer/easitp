@@ -1,5 +1,6 @@
 package fr.ylecuyer.easitp;
 
+import android.app.ProgressDialog;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ public class WhereActivity extends AppCompatActivity implements OnLocationUpdate
     private GoogleMap map;
     private LatLng position;
     private LatLng destino;
+    private ProgressDialog progressDialog;
 
     @Click(R.id.button)
     public void goToSitpCercanos() {
@@ -57,6 +59,9 @@ public class WhereActivity extends AppCompatActivity implements OnLocationUpdate
 
         map.setMyLocationEnabled(true);
         map.setOnMarkerDragListener(this);
+
+        progressDialog = ProgressDialog.show(this, "", "Buscando su ubicacion", true, false);
+
     }
 
     @Override
@@ -70,6 +75,8 @@ public class WhereActivity extends AppCompatActivity implements OnLocationUpdate
                 .draggable(true);
         
         map.addMarker(markerOption);
+
+        progressDialog.dismiss();
     }
 
     @Override

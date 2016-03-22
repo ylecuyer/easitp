@@ -80,6 +80,8 @@ public class PuntosRecargas extends AppCompatActivity implements OnLocationUpdat
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 12));
 
         map.setMyLocationEnabled(true);
+
+        progressDialog = ProgressDialog.show(this, "", "Buscando su ubicacion", true, false);
     }
 
     @Override
@@ -87,6 +89,8 @@ public class PuntosRecargas extends AppCompatActivity implements OnLocationUpdat
 
         LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 14));
+
+        progressDialog.dismiss();
 
         progressDialog = ProgressDialog.show(this, "", "Un momento", true, false);
 
