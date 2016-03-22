@@ -58,8 +58,9 @@ get '/sitp/:lat_from/:lon_from/:distance_from/:lat_to/:lon_to/:distance_to' do
     left join bus_horario bh on bh.bus_id = b.id
     left join days d on d.id = bh.day_id
     where CURRENT_TIME BETWEEN desde::TIME and hasta::TIME
-    and case extract(dow FROM CURRENT_DATE) 
-    when 0 then bh.day_id IN (4,5)
+    and case 
+    case when exists (select day from festivos where CURRENT_DATE = day) then 0 else extract(dow FROM CURRENT_DATE) end
+    when 0 then bh.day_id IN (4, 5)
     when 1 then bh.day_id IN (1, 2, 5)
     when 2 then bh.day_id IN (1, 2, 5)
     when 3 then bh.day_id IN (1, 2, 5)
@@ -88,7 +89,8 @@ get '/tullave/:lat/:lon/:distance' do
     select ST_X(pr.position::geometry) as longitude, ST_Y(pr.position::geometry) as latitude, pr.name, pr.address, pr.horario_week, pr.horario_sabado, pr.horario_domingo_festivo
     from puntos_recargas pr 
     where ST_Distance(ST_GeographyFromText('Point(#{lon} #{lat})'), position) <= #{distance}
-    and case extract(dow FROM CURRENT_DATE) 
+    and case 
+    case when exists (select day from festivos where CURRENT_DATE = day) then 0 else extract(dow FROM CURRENT_DATE) end
     when 0 then CURRENT_TIME BETWEEN split_part(pr.horario_domingo_festivo, '-', 1)::time and split_part(pr.horario_domingo_festivo, '-', 2)::time
     when 1 then CURRENT_TIME BETWEEN split_part(pr.horario_week, '-', 1)::time and split_part(pr.horario_week, '-', 2)::time
     when 2 then CURRENT_TIME BETWEEN split_part(pr.horario_week, '-', 1)::time and split_part(pr.horario_week, '-', 2)::time

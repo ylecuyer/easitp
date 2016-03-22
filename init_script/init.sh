@@ -6,16 +6,13 @@ curl -s http://mapas.tullaveplus.com`sed -n '2p' links.txt` | sed 's/.\{2\}$//' 
 echo "Preparing dump"
 
 cat data1.json | jq -r ".rows[] | { name: .row.name , address: .row.add, latitude: .row.geojson.coordinates[1], longitude: .row.geojson.coordinates[0], horario_week: .row.wks, horario_sabado: .row.exs, horario_domingo_festivo: .row.hds} | @text \"INSERT INTO puntos_recargas(name, address, position, horario_week, horario_sabado, horario_domingo_festivo) VALUES('\(.name)', '\(.address)', ST_GeographyFromText('Point(\(.longitude) \(.latitude))'), '\(.horario_week)', '\(.horario_sabado)', '\(.horario_domingo_festivo)');\" " > dump_tullave.sql
-
 cat data2.json | jq -r ".rows[] | { name: .row.name , address: .row.add, latitude: .row.geojson.coordinates[1], longitude: .row.geojson.coordinates[0], horario_week: .row.wks, horario_sabado: .row.exs, horario_domingo_festivo: .row.hds} | @text \"INSERT INTO puntos_recargas(name, address, position, horario_week, horario_sabado, horario_domingo_festivo) VALUES('\(.name)', '\(.address)', ST_GeographyFromText('Point(\(.longitude) \(.latitude))'), '\(.horario_week)', '\(.horario_sabado)', '\(.horario_domingo_festivo)');\" " >> dump_tullave.sql
-
 sed -i 's/null/00:00/g' dump_tullave.sql
 
 echo "Download Transmitp APK"
 
 URL=$(curl -s "http://apk-dl.com/transmilenio-y-sitp" | grep "apk-dl.com/files" | tail -1 | cut -d '"' -f4)
 URL_APK=$(curl -s http:$URL | grep "in a few seconds" | tail -1 | cut -d '"' -f2)
-
 curl "$URL_APK" -o transmitp.apk
 
 echo "Extracting data"
@@ -49,6 +46,10 @@ sqlite3 transmitp/assets/transmi_sitp 'select * from dia' | awk -F "|" '{print "
 psql easitp -c "CREATE TABLE bus_horario ( bus_id integer, day_id integer, desde character varying(20), hasta character varying(20), CONSTRAINT day_fk FOREIGN KEY (day_id) REFERENCES days (id) MATCH SIMPLE)"
 psql easitp -c "ALTER TABLE bus_horario OWNER TO easitp;"
 sqlite3 transmitp/assets/transmi_sitp 'select b.pk_id, bh.fk_dia, bh.desde, bh.hasta from bus b left join bus_horario bh on b.pk_id = bh.fk_bus where b.fk_agency = "SITP-U"' | awk -F "|" '{ print "INSERT INTO bus_horario(bus_id, day_id, desde, hasta) VALUES("$1","$2",'\''"$3"'\'','\''"$4"'\'');" }' | psql -q easitp
+
+psql easitp -c "CREATE TABLE festivos (day date)"
+psql easitp -c "ALTER TABLE festivos OWNER TO easitp;"
+sqlite3 transmitp/assets/transmi_sitp 'select pk_id from festivo' | awk -F "|" '{ print "INSERT INTO festivos(day) VALUES('\''"$1"'\''::date);" }' | psql -q easitp
 
 echo "Clean up"
 
