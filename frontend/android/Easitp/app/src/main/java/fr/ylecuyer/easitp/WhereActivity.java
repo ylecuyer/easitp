@@ -50,6 +50,11 @@ public class WhereActivity extends AppCompatActivity implements OnLocationUpdate
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+
+        //Show bogota
+        LatLng position = new LatLng( 4.66956771,-74.07378649);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 12));
+
         map.setMyLocationEnabled(true);
         map.setOnMarkerDragListener(this);
     }
