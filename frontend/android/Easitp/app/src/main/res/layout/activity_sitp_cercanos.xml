@@ -20,4 +20,14 @@
         android:layout_weight="1"
         android:numColumns="4"
         android:choiceMode="singleChoice" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="0px"
+        android:gravity="center"
+        android:text="Ningun SITP cercano pasa para este destino"
+        android:id="@+id/emptyview"
+        android:visibility="gone"
+        android:layout_weight="1"/>
+
 </LinearLayout>

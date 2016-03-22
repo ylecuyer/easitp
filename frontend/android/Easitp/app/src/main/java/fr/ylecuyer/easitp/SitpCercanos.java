@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,6 +46,9 @@ public class SitpCercanos extends AppCompatActivity  implements OnMapReadyCallba
     @ViewById
     public GridView gridView;
 
+    @ViewById
+    TextView emptyview;
+
     private StationList stations;
     private ProgressDialog progressDialog;
 
@@ -55,6 +59,9 @@ public class SitpCercanos extends AppCompatActivity  implements OnMapReadyCallba
         mapFragment.getMapAsync(this);
 
         adapter = new LineAdapter(this);
+
+        gridView.setEmptyView(emptyview);
+
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(this);
     }
