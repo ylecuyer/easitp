@@ -76,7 +76,7 @@ public class PuntosRecargas extends AppCompatActivity implements OnLocationUpdat
         map = googleMap;
 
         //Show bogota
-        LatLng position = new LatLng( 4.66956771,-74.07378649);
+        LatLng position = new LatLng(4.66956771,-74.07378649);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 12));
 
         map.setMyLocationEnabled(true);

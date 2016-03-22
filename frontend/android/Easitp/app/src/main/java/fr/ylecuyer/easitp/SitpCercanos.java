@@ -1,5 +1,6 @@
 package fr.ylecuyer.easitp;
 
+import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -45,6 +46,7 @@ public class SitpCercanos extends AppCompatActivity  implements OnMapReadyCallba
     public GridView gridView;
 
     private StationList stations;
+    private ProgressDialog progressDialog;
 
     @AfterViews
     void init() {
@@ -78,6 +80,8 @@ public class SitpCercanos extends AppCompatActivity  implements OnMapReadyCallba
 
         map.moveCamera(cameraUpdate);
 
+        progressDialog = ProgressDialog.show(this, "", "Un momento", true, false);
+
         downloadLines(start, destino);
     }
 
@@ -90,6 +94,7 @@ public class SitpCercanos extends AppCompatActivity  implements OnMapReadyCallba
     @UiThread
     void updateDisplay() {
         adapter.setLines(lines);
+        progressDialog.dismiss();
     }
 
     @Background
@@ -112,10 +117,14 @@ public class SitpCercanos extends AppCompatActivity  implements OnMapReadyCallba
             map.addMarker(new MarkerOptions().position(new LatLng(station.getLatitude(), station.getLongitude())).title(station.getStation()));
         }
 
+        progressDialog.dismiss();
+
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        progressDialog = ProgressDialog.show(this, "", "Un momento", true, false);
+
         downloadStations(l);
     }
 }
