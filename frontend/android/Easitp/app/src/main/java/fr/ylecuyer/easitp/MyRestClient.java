@@ -5,8 +5,8 @@ import org.androidannotations.rest.spring.annotations.Path;
 import org.androidannotations.rest.spring.annotations.Rest;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
-@Rest(rootUrl = "http://www.easitp.tk", converters = { MappingJackson2HttpMessageConverter.class })
-//@Rest(rootUrl = "http://10.0.2.2:4567", converters = { MappingJackson2HttpMessageConverter.class })
+//@Rest(rootUrl = "http://www.easitp.tk", converters = { MappingJackson2HttpMessageConverter.class })
+@Rest(rootUrl = "http://10.0.2.2:4567", converters = { MappingJackson2HttpMessageConverter.class })
 public interface MyRestClient {
 
     @Get("/tullave/{latitude}/{longitude}")

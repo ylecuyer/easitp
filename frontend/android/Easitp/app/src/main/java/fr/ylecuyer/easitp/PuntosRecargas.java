@@ -1,13 +1,17 @@
 package fr.ylecuyer.easitp;
 
+import android.app.ProgressDialog;
 import android.location.Location;
 import android.os.Debug;
 import android.support.annotation.MainThread;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,6 +30,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.rest.spring.annotations.RestService;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -46,6 +51,10 @@ public class PuntosRecargas extends AppCompatActivity implements OnLocationUpdat
     public ListView listview;
 
     private TuLlaveAdapter adapter;
+    private ProgressDialog progressDialog;
+
+    @ViewById(R.id.emptyview)
+    TextView emptyview;
 
     @AfterViews
     void init() {
@@ -55,6 +64,8 @@ public class PuntosRecargas extends AppCompatActivity implements OnLocationUpdat
 
         SmartLocation.with(this).location()
                 .start(this);
+
+        listview.setEmptyView(emptyview);
 
         adapter = new TuLlaveAdapter(this);
         listview.setAdapter(adapter);
@@ -77,12 +88,15 @@ public class PuntosRecargas extends AppCompatActivity implements OnLocationUpdat
         LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 14));
 
+        progressDialog = ProgressDialog.show(this, "", "Un momento", true, false);
+
         downloadPuntos(position);
     }
 
     @Background
     public void downloadPuntos(LatLng position) {
         puntos = myRestClient.getPuntos(position.latitude, position.longitude);
+
         updateDisplay();
     }
 
@@ -102,5 +116,6 @@ public class PuntosRecargas extends AppCompatActivity implements OnLocationUpdat
         }
 
         adapter.setPuntos(puntos);
+        progressDialog.dismiss();
     }
 }
