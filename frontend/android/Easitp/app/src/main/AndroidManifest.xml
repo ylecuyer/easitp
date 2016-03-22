@@ -23,15 +23,15 @@
         <activity
             android:name=".PuntosRecargas_"
             android:label="Puntos de recarga cercanos"
-            android:parentActivityName=".MainActivity_"/>
+            android:parentActivityName=".MainActivity_" />
         <activity
             android:name=".SitpCercanos_"
             android:label="Sitp cercanos"
-            android:parentActivityName=".MainActivity_"/>
+            android:parentActivityName=".MainActivity_" />
         <activity
             android:name=".WhereActivity_"
             android:label="Donde quieres ir?"
-            android:parentActivityName=".MainActivity_"/>
+            android:parentActivityName=".MainActivity_" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -40,6 +40,8 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBnB3-XonyWMYcLNtLw1hmG9fgWHdEO690" />
+
+        <activity android:name=".SettingsActivity_" android:label="Configuracion" android:parentActivityName=".MainActivity_" />
     </application>
 
 </manifest>

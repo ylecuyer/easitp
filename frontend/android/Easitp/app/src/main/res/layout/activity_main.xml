@@ -30,4 +30,15 @@
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/puntos_recarga"
         android:layout_alignEnd="@+id/puntos_recarga" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Configurar"
+        android:id="@+id/config"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/sitp_cercanos"
+        android:layout_alignEnd="@+id/sitp_cercanos" />
 </RelativeLayout>

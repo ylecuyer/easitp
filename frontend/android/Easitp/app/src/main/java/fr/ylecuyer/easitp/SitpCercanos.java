@@ -24,6 +24,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.androidannotations.rest.spring.annotations.RestService;
 
 @EActivity(R.layout.activity_sitp_cercanos)
@@ -51,6 +52,9 @@ public class SitpCercanos extends AppCompatActivity  implements OnMapReadyCallba
 
     private StationList stations;
     private ProgressDialog progressDialog;
+
+    @Pref
+    MyPrefs_ prefs;
 
     @AfterViews
     void init() {
@@ -94,7 +98,7 @@ public class SitpCercanos extends AppCompatActivity  implements OnMapReadyCallba
 
     @Background
     public void downloadLines(LatLng position, LatLng destino) {
-        lines = myRestClient.getLines(position.latitude, position.longitude, destino.latitude, destino.longitude);
+        lines = myRestClient.getLines(position.latitude, position.longitude, prefs.distance_from_sitp().get(), destino.latitude, destino.longitude, prefs.distance_destino_sitp().get());
         updateDisplay();
     }
 

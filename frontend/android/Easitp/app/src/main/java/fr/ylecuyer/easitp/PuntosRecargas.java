@@ -29,6 +29,8 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.sharedpreferences.Pref;
+import org.androidannotations.annotations.sharedpreferences.SharedPref;
 import org.androidannotations.rest.spring.annotations.RestService;
 import org.w3c.dom.Text;
 
@@ -55,6 +57,9 @@ public class PuntosRecargas extends AppCompatActivity implements OnLocationUpdat
 
     @ViewById(R.id.emptyview)
     TextView emptyview;
+
+    @Pref
+    MyPrefs_ prefs;
 
     @AfterViews
     void init() {
@@ -99,7 +104,8 @@ public class PuntosRecargas extends AppCompatActivity implements OnLocationUpdat
 
     @Background
     public void downloadPuntos(LatLng position) {
-        puntos = myRestClient.getPuntos(position.latitude, position.longitude);
+
+        puntos = myRestClient.getPuntos(position.latitude, position.longitude, prefs.distance_tullave().get());
 
         updateDisplay();
     }

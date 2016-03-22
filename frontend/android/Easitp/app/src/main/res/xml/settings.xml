@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <EditTextPreference android:key="distance_tullave" android:title="Caminata max. para recargar" android:summary="Distancia en metros" android:hint="1000" android:defaultValue="1000" android:inputType="number"/>
+    <EditTextPreference android:key="distance_from_sitp" android:title="Caminata max. desde punto inicial" android:summary="Distancia en metros" android:hint="200" android:defaultValue="200" android:inputType="number"/>
+    <EditTextPreference android:key="distance_destino_sitp" android:title="Caminata max. hasta destino" android:summary="Distancia en metros" android:hint="500" android:defaultValue="500" android:inputType="number"/>
+</PreferenceScreen>

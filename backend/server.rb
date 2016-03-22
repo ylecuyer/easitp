@@ -39,19 +39,21 @@ get '/line/:id' do
   parse(results).to_json
 end
 
-get '/sitp/:lat_from/:lon_from/:lat_to/:lon_to' do
+get '/sitp/:lat_from/:lon_from/:distance_from/:lat_to/:lon_to/:distance_to' do
   content_type :json
 
   lat_from = params[:lat_from]
   lon_from = params[:lon_from]
+  distance_from = params[:distance_from]
   lat_to = params[:lat_to]
   lon_to = params[:lon_to]
+  distance_to = params[:distance_to]
   
   sitp_query = %{
     select b.id, b.line, trim(both from split_part(b.name, '»', 2)) as destino, d.short, bh.desde, bh.hasta from (
-      select id, line, name from buses where ST_Distance(ST_GeographyFromText('Point(#{lon_from} #{lat_from})'),position) <= 500
+      select id, line, name from buses where ST_Distance(ST_GeographyFromText('Point(#{lon_from} #{lat_from})'),position) <= #{distance_from}
       intersect
-      select id, line, name from buses where ST_Distance(ST_GeographyFromText('Point(#{lon_to} #{lat_to})'),position) <= 500
+      select id, line, name from buses where ST_Distance(ST_GeographyFromText('Point(#{lon_to} #{lat_to})'),position) <= #{distance_to}
     ) b
     left join bus_horario bh on bh.bus_id = b.id
     left join days d on d.id = bh.day_id
@@ -75,16 +77,17 @@ get '/sitp/:lat_from/:lon_from/:lat_to/:lon_to' do
   parse(results).to_json
 end
 
-get '/tullave/:lat/:lon' do
+get '/tullave/:lat/:lon/:distance' do
   content_type :json
 
   lat = params[:lat]
   lon = params[:lon]
+  distance = params[:distance]
   
   tullave_query = %{
     select ST_X(pr.position::geometry) as longitude, ST_Y(pr.position::geometry) as latitude, pr.name, pr.address, pr.horario_week, pr.horario_sabado, pr.horario_domingo_festivo
     from puntos_recargas pr 
-    where ST_Distance(ST_GeographyFromText('Point(#{lon} #{lat})'), position) <= 1000
+    where ST_Distance(ST_GeographyFromText('Point(#{lon} #{lat})'), position) <= #{distance}
     and case extract(dow FROM CURRENT_DATE) 
     when 0 then CURRENT_TIME BETWEEN split_part(pr.horario_domingo_festivo, '-', 1)::time and split_part(pr.horario_domingo_festivo, '-', 2)::time
     when 1 then CURRENT_TIME BETWEEN split_part(pr.horario_week, '-', 1)::time and split_part(pr.horario_week, '-', 2)::time

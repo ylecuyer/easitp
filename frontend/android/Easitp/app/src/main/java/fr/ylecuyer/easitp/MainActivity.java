@@ -18,4 +18,9 @@ public class MainActivity extends AppCompatActivity {
     void goToWhere() {
         WhereActivity_.intent(this).start();
     }
+
+    @Click(R.id.config)
+    void goToSettings() {
+        SettingsActivity_.intent(this).start();
+    }
 }
