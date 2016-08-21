@@ -5,7 +5,7 @@ require 'connection_pool'
 
 configure do
   pg = ConnectionPool.new(size: 2) {
-    PG.connect(dbname: 'easitp', user: 'easitp', password: 'easitp')
+    PG.connect(host: 'localhost', dbname: 'easitp', user: 'easitp', password: 'easitp')
   }	
 
   set :pg, pg
