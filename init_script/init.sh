@@ -49,6 +49,10 @@ psql easitp -c "CREATE TABLE festivos (day date)"
 psql easitp -c "ALTER TABLE festivos OWNER TO easitp;"
 sqlite3 transmitp/assets/transmi_sitp 'select pk_id from festivo' | awk -F "|" '{ print "INSERT INTO festivos(day) VALUES('\''"$1"'\''::date);" }' | psql -q easitp
 
+psql easitp -c "update puntos_recargas set horario_week = '00:00-00:00' where horario_week = '';"
+psql easitp -c "update puntos_recargas set horario_sabado = '00:00-00:00' where horario_sabado = '';"
+psql easitp -c "update puntos_recargas set horario_domingo_festivo = '00:00-00:00' where horario_domingo_festivo = '';"
+
 echo "Clean up"
 
 rm data1.json
