@@ -9,11 +9,9 @@ cat data1.json | jq -r ".rows[] | { name: .row.name , address: .row.add, latitud
 cat data2.json | jq -r ".rows[] | { name: .row.name , address: .row.add, latitude: .row.geojson.coordinates[1], longitude: .row.geojson.coordinates[0], horario_week: .row.wks, horario_sabado: .row.exs, horario_domingo_festivo: .row.hds} | @text \"INSERT INTO puntos_recargas(name, address, position, horario_week, horario_sabado, horario_domingo_festivo) VALUES('\(.name)', '\(.address)', ST_GeographyFromText('Point(\(.longitude) \(.latitude))'), '\(.horario_week)', '\(.horario_sabado)', '\(.horario_domingo_festivo)');\" " >> dump_tullave.sql
 sed -i 's/null/00:00/g' dump_tullave.sql
 
-echo "Download Transmitp APK"
+echo "Please put transmitp.apk"
 
-URL=$(curl -s "http://apk-dl.com/transmilenio-y-sitp" | grep "apk-dl.com/files" | tail -1 | cut -d '"' -f4)
-URL_APK=$(curl -s http:$URL | grep "in a few seconds" | tail -1 | cut -d '"' -f2)
-curl "$URL_APK" -o transmitp.apk
+read
 
 echo "Extracting data"
 
