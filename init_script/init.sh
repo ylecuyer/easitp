@@ -5,7 +5,7 @@ curl -s http://mapas.tullaveplus.com`sed -n '2p' links.txt` | sed 's/.\{2\}$//' 
 
 echo "Preparing dump"
 
-cat data1.json | jq -r ".rows[] | { name: .row.name , address: .row.add, latitude: .row.geojson.coordinates[1], longitude: .row.geojson.coordinates[0], horario_week: .row.wks, horario_sabado: .row.exs, horario_domingo_festivo: .row.hds} | @text \"INSERT INTO puntos_recargas(name, address, position, horario_week, horario_sabado, horario_domingo_festivo) VALUES('\(.name)', '\(.address)', ST_GeographyFromText('Point(\(.longitude) \(.latitude))'), '\(.horario_week)', '\(.horario_sabado)', '\(.horario_domingo_festivo)');\" " > dump_tullave.sql
+cat data1.json | jq -r ".rows[] | { name: .row.name , address: .row.add, latitude: .row.geojson.coordinates[1], longitude: .row.geojson.coordinates[0], horario_week: .row.wks, horario_sabado: .row.exs, horario_domingo_festivo: .row.hds} | @text \"INSERT INTO puntos_recargas(name, address, position, horario_week, horario_sabado, horario_domingo_festivo) VALUES('\(.name)', '\(.address)', ST_GeographyFromText('Point(\(.longitude) \(.latitude))'), '\(.horario_week', '\(.horario_sabado)', '\(.horario_domingo_festivo)');\" " > dump_tullave.sql
 cat data2.json | jq -r ".rows[] | { name: .row.name , address: .row.add, latitude: .row.geojson.coordinates[1], longitude: .row.geojson.coordinates[0], horario_week: .row.wks, horario_sabado: .row.exs, horario_domingo_festivo: .row.hds} | @text \"INSERT INTO puntos_recargas(name, address, position, horario_week, horario_sabado, horario_domingo_festivo) VALUES('\(.name)', '\(.address)', ST_GeographyFromText('Point(\(.longitude) \(.latitude))'), '\(.horario_week)', '\(.horario_sabado)', '\(.horario_domingo_festivo)');\" " >> dump_tullave.sql
 sed -i 's/null/00:00/g' dump_tullave.sql
 
@@ -52,6 +52,15 @@ sqlite3 transmitp/assets/transmi_sitp 'select pk_id from festivo' | awk -F "|" '
 psql easitp -c "update puntos_recargas set horario_week = '00:00-00:00' where horario_week = '';"
 psql easitp -c "update puntos_recargas set horario_sabado = '00:00-00:00' where horario_sabado = '';"
 psql easitp -c "update puntos_recargas set horario_domingo_festivo = '00:00-00:00' where horario_domingo_festivo = '';"
+
+psql easitp -c "insert into puntos_recargas select name, address, position, regexp_split_to_table(horario_week, ' (Y|y) ') as horario_week, '00:00-00:00' as horario_sabado, '00:00-00:00' as horario_domingo_festivo from puntos_recargas where upper(horario_week) like '% Y %';"
+psql easitp -c "delete from puntos_recargas where upper(horario_week) like '% Y %';"
+
+psql easitp -c "insert into puntos_recargas select name, address, position, '00:00-00:00' as horario_week, regexp_split_to_table(horario_sabado, ' (Y|y) ') as horario_sabado, '00:00-00:00' as horario_domingo_festivo from puntos_recargas where upper(horario_sabado) like '% Y %';"
+psql easitp -c "delete from puntos_recargas where upper(horario_sabado) like '% Y %';"
+
+psql easitp -c "insert into puntos_recargas select name, address, position, '00:00-00:00' as horario_week, '00:00-00:00' as horario_sabado, regexp_split_to_table(horario_domingo_festivo, ' (Y|y) ') as horario_domingo_festivo from puntos_recargas where upper(horario_domingo_festivo) like '% Y %';"
+psql easitp -c "delete from puntos_recargas where upper(horario_domingo_festivo) like '% Y %';"
 
 echo "Clean up"
 
