@@ -9,13 +9,13 @@ cat data1.json | jq -r ".rows[] | { name: .row.name , address: .row.add, latitud
 cat data2.json | jq -r ".rows[] | { name: .row.name , address: .row.add, latitude: .row.geojson.coordinates[1], longitude: .row.geojson.coordinates[0], horario_week: .row.wks, horario_sabado: .row.exs, horario_domingo_festivo: .row.hds} | @text \"INSERT INTO puntos_recargas(name, address, position, horario_week, horario_sabado, horario_domingo_festivo) VALUES('\(.name)', '\(.address)', ST_GeographyFromText('Point(\(.longitude) \(.latitude))'), '\(.horario_week)', '\(.horario_sabado)', '\(.horario_domingo_festivo)');\" " >> dump_tullave.sql
 sed -i 's/null/00:00/g' dump_tullave.sql
 
-echo "Please put transmitp.apk"
+echo "Updating transmitp.apk"
 
-read
+gplaycli -c credentials.conf -d com.rutasdeautobuses.transmileniositp -p
 
 echo "Extracting data"
 
-unzip -q transmitp.apk -d transmitp
+unzip -q com.rutasdeautobuses.transmileniositp.apk -d transmitp
 
 echo "Preparing DB"
 
@@ -69,4 +69,6 @@ rm data2.json
 rm dump_tullave.sql 
 rm links.txt 
 rm -rf transmitp
-rm transmitp.apk
+rm com.rutasdeautobuses.transmileniositp.apk
+
+# Pour tester les données faire select name, split_part(horario_week, '-', 2)::time from puntos_recargas; et select name, split_part(horario_week, '-', 1)::time from puntos_recargas;
